@@ -84,7 +84,7 @@ describe('참조형 데이터 깊은 복사 테스트', () => {
 
         expect(arr).not.toStrictEqual(arrCopy);
     });
-    
+
     // 참조형 : map
     test('map 타입 프로퍼티 복사 테스트', () => {
         let map = new Map();
@@ -126,10 +126,6 @@ describe('참조형 데이터 깊은 복사 테스트', () => {
         let weakMap = new WeakMap();
         let obj = { a: 1 };
         weakMap.set(obj, 'value');
-
-        // 키-값 쌍을 저장할 Map 생성
-        let map = new Map();
-        map.set(obj, 'value');
 
         // 키 Set 생성
         let keySet = new Set();
@@ -175,11 +171,6 @@ describe('다양한 객체 깊은 복사 테스트', () => {
         let weakMap2 = new WeakMap();
         let obj2 = { b: 1 };
         weakMap2.set(obj2, 'value2');
-
-        // 키-값 쌍을 저장할 Map 생성
-        let map = new Map();
-        map.set(obj, 'value');
-        map.set(obj2, 'value2');
 
         // outerObj 객체 생성
         let outerObj = {
