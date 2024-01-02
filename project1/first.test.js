@@ -85,6 +85,18 @@ describe('참조형 데이터 깊은 복사 테스트', () => {
         expect(arr).not.toStrictEqual(arrCopy);
     });
 
+    // 참조형 : Date
+    test('Date 타입 프로퍼티 복사 테스트', () => {
+        let date = new Date();
+        let dateCopy = deepCopy(date);
+
+        expect(date).toStrictEqual(dateCopy);
+
+        dateCopy = "other data";
+
+        expect(date).not.toStrictEqual(dateCopy);
+    });
+
     // 참조형 : map
     test('map 타입 프로퍼티 복사 테스트', () => {
         let map = new Map();

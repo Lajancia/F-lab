@@ -1,14 +1,12 @@
 const deepCopy = (obj, keySet) => {
     try {
-        // 기본형 복사
-        if (obj === null || typeof obj !== 'object') {
+        if (obj === null || typeof obj !== 'object') { // 기본형 복사
             return obj;
-        }
-
-        // 참조형 복사
-        else {
+        } else if (obj instanceof Date || typeof obj == 'function') { // 참조형 : Date, function
+            return obj;
+        } else { // 이외 참조형 복사
             let clone = Array.isArray(obj) ? [] : {};
-
+            
             if (obj instanceof Map) {
                 // Map인 경우
                 let map = new Map();
@@ -52,6 +50,7 @@ const deepCopy = (obj, keySet) => {
                     clone[key] = deepCopy(obj[key], keySet); // 일반 객체
                 }
             }
+            console.log(clone)
             return clone;
         }
     } catch (e) {
