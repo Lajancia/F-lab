@@ -1,4 +1,4 @@
-const { deepCopy } = require('./first');
+const { deepCopy } = require('./deepCopy');
 
 describe('기본형 깊은 복사 테스트', () => {
     // 기본형 : 숫자
