@@ -1,61 +1,70 @@
-const deepCopy = (obj, keySet) => {
-    try {
-        if (obj === null || typeof obj !== 'object') { // 기본형 복사
-            return obj;
-        } else if (obj instanceof Date || typeof obj == 'function') { // 참조형 : Date, function
-            return obj;
-        } else { // 이외 참조형 복사
-            let clone = Array.isArray(obj) ? [] : {};
-            
-            if (obj instanceof Map) {
-                // Map인 경우
-                let map = new Map();
-                for (let [key, value] of obj) {
-                    map.set(deepCopy(key), deepCopy(value));
-                }
-                return map
-            } else if (obj instanceof Set) {
-                // Set인 경우
-                let set = new Set();
-                for (let value of obj) {
-                    set.add(deepCopy(value));
-                }
-                return set
-            } else if (obj instanceof WeakMap) {
-                if (!keySet) {
-                    throw new Error("WeakMap keySet parameter is required");
-                }
-                let weakMapClone = new WeakMap();
-                for (let weakKey of keySet) {
-                    if (obj.has(weakKey)) {
-                        weakMapClone.set(weakKey, deepCopy(obj.get(weakKey), keySet));
-                    }
-                }
-                clone = weakMapClone;
-            } else if (obj instanceof WeakSet) {
-                if (!keySet) {
-                    throw new Error("WeakSet keySet parameter is required");
-                }
-                // 참조형 : WeakSet
-                let weakSetClone = new WeakSet();
-                
-                for (let weakKey of keySet) {
-                    if (obj.has(weakKey)) {
-                        weakSetClone.add(deepCopy(weakKey, keySet));
-                    }
-                }
-                clone = weakSetClone;
-            } else {
-                for (let key in obj) {
-                    clone[key] = deepCopy(obj[key], keySet); // 일반 객체
-                }
-            }
-            console.log(clone)
-            return clone;
+const typeHandlers = {
+    '[object Number]': (obj) => {return obj},
+    '[object String]': (obj) => {return obj},
+    '[object Null]': (obj) => {return obj},
+    '[object Undefined]': (obj) => {return obj},
+    '[object Symbol]': (obj) => {return obj},
+    '[object Date]': (obj) => {return obj},
+    '[object Object]': (obj) => {
+        const clone = Array.isArray(obj) ? [] : {};
+        for (const key in obj) {
+            clone[key] = deepCopy(obj[key]); // 일반 객체
         }
-    } catch (e) {
-        return e.message;
+        return clone;
+    },
+    '[object Array]': (obj) => {
+        const clone = Array.isArray(obj) ? [] : {};
+        for (const key in obj) {
+            clone[key] = deepCopy(obj[key]); // 일반 객체
+        }
+        return clone;
+    },
+    '[object Map]': (obj) => {
+        const map = new Map();
+        for (const [key, value] of obj) {
+            map.set(deepCopy(key), deepCopy(value));
+        }
+        return map
+    },
+    '[object Set]': (obj) => {
+        const set = new Set();
+        for (const value of obj) {
+            set.add(deepCopy(value));
+        }
+        return set
+    },
+    '[object WeakMap]': () => {
+        throw new Error("WeakMap cannot be decopied");
+    },
+    '[object WeakSet]': () => {
+        throw new Error("WeakSet cannot be decopied");
+    }
+};
+
+// 깊은 복사 함수
+const deepCopy = (obj) => {
+    const type = Object.prototype.toString.call(obj);
+
+    if (typeHandlers.hasOwnProperty(type)) {
+        const copy = typeHandlers[type];
+        return copy(obj);
+    } else {
+        throw new Error("This type doesn't support");
     }
 }
 
-module.exports = { deepCopy };
+// try, catch 유틸화
+const handleError = (func) => {
+    return (...arg) => {
+        try {
+            return func(...arg);
+        } catch (e) {
+            return e.message
+        }
+    };
+}
+
+// try, catch + deepCopy
+const deepCopy_refact = handleError(deepCopy);
+
+module.exports = { deepCopy_refact};
