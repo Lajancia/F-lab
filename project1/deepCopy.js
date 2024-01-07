@@ -36,11 +36,12 @@ const typeHandlers = {
     '[object WeakMap]': () => {
         throw new Error("WeakMap cannot be decopied");
     },
-    '[object WeakSet]': (oj) => {
+    '[object WeakSet]': () => {
         throw new Error("WeakSet cannot be decopied");
     }
 };
 
+// 깊은 복사 함수
 const deepCopy = (obj) => {
     const type = Object.prototype.toString.call(obj);
 
@@ -54,7 +55,7 @@ const deepCopy = (obj) => {
 
 // try, catch 유틸화
 const handleError = (func) => {
-    return function (...arg) {
+    return (...arg) => {
         try {
             return func(...arg);
         } catch (e) {
